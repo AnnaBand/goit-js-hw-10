@@ -26,7 +26,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    new SlimSelect('#single', {
+    new SlimSelect({
+      select: '#single',
       data: breeds.map(breed => ({ value: breed.id, text: breed.name })),
       placeholder: 'Select a breed'
     });
