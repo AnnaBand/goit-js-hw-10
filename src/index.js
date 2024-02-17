@@ -4,81 +4,76 @@ axios.defaults.headers.common["x-api-key"] = "live_hqS8g05ZHcCMorrOK1oGyTpHCtvYr
 
 import { fetchBreeds, fetchCatByBreed } from "./cat-api.js";
 
+import SlimSelect from 'slim-select';
+import 'slim-select/dist/slimselect.css';
+
+import Notiflix from "notiflix";
+
 document.addEventListener("DOMContentLoaded", async () => {
-  const breedSelect = document.querySelector(".breed-select");
   const loader = document.querySelector(".loader");
-  const error = document.querySelector(".error");
+  const errorDisplay = document.querySelector(".error");
   const catInfo = document.querySelector(".cat-info");
+  const breedSelect = document.querySelector("#single");
 
   try {
-    // Ukryj select i wyświetl loader podczas pobierania listy ras
-    breedSelect.style.display = "none"; // <-- Zmiana: Dodane wyłączenie selecta
     loader.style.display = "block";
 
-    // Pobierz kolekcję ras kota
     const breeds = await fetchBreeds();
 
-    // Sprawdź, czy lista ras jest pusta
     if (breeds.length === 0) {
-      // Jeśli lista jest pusta, wyświetl komunikat o błędzie
-      error.textContent = "No cat breeds found. Please try reloading the page.";
-      error.style.display = "block";
-      loader.style.display = "none"; // Ukryj loader
-      return; // Wyjdź z funkcji, aby zapobiec dalszemu wykonywaniu
+      Notiflix.Notify.failure('No cat breeds found. Please try reloading the page.'); // Zmieniony komunikat błędu
+      loader.style.display = "none";
+      return;
     }
 
-    // Wypełnij select opcjami ras kota
-    breeds.forEach(breed => {
-      const option = document.createElement("option");
-      option.value = breed.id;
-      option.textContent = breed.name;
-      breedSelect.appendChild(option);
+    new SlimSelect('#single', {
+      data: breeds.map(breed => ({ value: breed.id, text: breed.name })),
+      placeholder: 'Select a breed'
     });
 
-    // Wyświetl select i ukryj loader po zakończeniu pobierania listy ras
-    breedSelect.style.display = "block"; // <-- Zmiana: Dodane włączenie selecta
     loader.style.display = "none";
-    
-    // Obsługa zmiany wybranej opcji w select
-    breedSelect.addEventListener("change", async event => {
-      const breedId = event.target.value;
-      loader.style.display = "block";
-      error.style.display = "none";
-      catInfo.innerHTML = ""; // Wyczyść zawartość bloku z informacjami o kocie
-      catInfo.style.display = "none"; // Ukryj div.cat-info podczas pobierania informacji o kocie
-      
-      try {
-        // Pobierz informacje o kocie na podstawie wybranej rasy
-        const catData = await fetchCatByBreed(breedId);
-        
-        // Wyświetl informacje o kocie
-        const catImg = document.createElement("img");
-        catImg.src = catData[0].url;
-        catInfo.appendChild(catImg);
-
-        const catName = document.createElement("p");
-        catName.innerHTML = `<strong>Name:</strong> ${catData[0].breeds[0].name}`;
-        catInfo.appendChild(catName);
-
-        const catDescription = document.createElement("p");
-        catDescription.innerHTML = `<strong>Description:</strong> ${catData[0].breeds[0].description}`;
-        catInfo.appendChild(catDescription);
-
-        const catTemperament = document.createElement("p");
-        catTemperament.innerHTML = `<strong>Temperament:</strong> ${catData[0].breeds[0].temperament}`;
-        catInfo.appendChild(catTemperament);
-        
-        // Wyświetl div.cat-info po pomyślnym pobraniu informacji o kocie
-        catInfo.style.display = "block";
-      } catch (error) {
-        console.error("Błąd podczas pobierania informacji o kocie:", error);
-        error.style.display = "block";
-      } finally {
-        loader.style.display = "none"; // Ukryj loader po zakończeniu żądania
-      }
-    });
   } catch (error) {
-    console.error("Błąd podczas pobierania ras kota:", error);
-    error.style.display = "block";
+    console.error("Error while fetching cat breeds:", error);
+    Notiflix.Notify.failure('Oops! Something went wrong! Try reloading the page!');
   }
+
+  breedSelect.addEventListener("change", async event => {
+    const breedId = event.target.value;
+    loader.style.display = "block";
+    errorDisplay.style.display = "none";
+    catInfo.innerHTML = "";
+    catInfo.style.display = "none";
+
+    try {
+      const catData = await fetchCatByBreed(breedId);
+      
+      // Sprawdź, czy otrzymane dane zawierają informacje o kocie
+      if (!catData || catData.length === 0) {
+        throw new Error("No cat data found.");
+      }
+
+      const catImg = document.createElement("img");
+      catImg.src = catData[0].url;
+      catInfo.appendChild(catImg);
+
+      const catName = document.createElement("p");
+      catName.innerHTML = `<strong>Name:</strong> ${catData[0].breeds[0].name}`;
+      catInfo.appendChild(catName);
+
+      const catDescription = document.createElement("p");
+      catDescription.innerHTML = `<strong>Description:</strong> ${catData[0].breeds[0].description}`;
+      catInfo.appendChild(catDescription);
+
+      const catTemperament = document.createElement("p");
+      catTemperament.innerHTML = `<strong>Temperament:</strong> ${catData[0].breeds[0].temperament}`;
+      catInfo.appendChild(catTemperament);
+
+      catInfo.style.display = "block";
+    } catch (error) {
+      console.error("Error while fetching cat information:", error);
+      Notiflix.Notify.failure('Oops! Something went wrong! Try reloading the page!');
+    } finally {
+      loader.style.display = "none";
+    }
+  });
 });

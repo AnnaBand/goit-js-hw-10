@@ -7,7 +7,7 @@ export async function fetchBreeds() {
     const response = await axios.get("https://api.thecatapi.com/v1/breeds");
     return response.data;
   } catch (error) {
-    console.error("Błąd podczas pobierania ras kota:", error);
+    console.error("Error while fetching cat breeds:", error);
     throw error;
   }
 }
@@ -17,7 +17,7 @@ export async function fetchCatByBreed(breedId) {
     const response = await axios.get(`https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`);
     return response.data;
   } catch (error) {
-    console.error("Błąd podczas pobierania informacji o kocie:", error);
+    console.error("Error while fetching cat information:", error);
     throw error;
   }
 }
