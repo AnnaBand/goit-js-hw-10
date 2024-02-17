@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const breeds = await fetchBreeds();
 
     if (breeds.length === 0) {
-      Notiflix.Notify.failure('No cat breeds found. Please try reloading the page.'); // Zmieniony komunikat błędu
+      Notiflix.Notify.failure('No cat breeds found. Please try reloading the page.');
       loader.style.display = "none";
       return;
     }
@@ -47,7 +47,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       const catData = await fetchCatByBreed(breedId);
       
-      // Sprawdź, czy otrzymane dane zawierają informacje o kocie
       if (!catData || catData.length === 0) {
         throw new Error("No cat data found.");
       }
