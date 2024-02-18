@@ -25,11 +25,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       loader.style.display = "none";
       return;
     }
+    
+    const options = breeds.map(breed => ({ value: breed.id, text: breed.name }));
+    options.unshift({ value: '', text: '- Select a breed -' });
 
     new SlimSelect({
       select: '#single',
-      data: breeds.map(breed => ({ value: breed.id, text: breed.name })),
-      placeholder: 'Select a breed'
+      data: options,
     });
 
     loader.style.display = "none";
