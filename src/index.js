@@ -53,6 +53,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (!catData || catData.length === 0) {
         throw new Error("No cat data found.");
       }
+        
+      document.querySelector("body").classList.add("selected-background");
 
       const catImg = document.createElement("img");
       catImg.src = catData[0].url;

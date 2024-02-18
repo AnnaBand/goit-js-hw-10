@@ -1,25 +1,28 @@
 body {
+    background-color: bisque;
+}
+
+body.selected-background {
     background-image: url('https://upload.wikimedia.org/wikipedia/en/b/bc/Garfield_the_Cat.svg');
     background-repeat: no-repeat;
     background-position: 0 15%;
     background-size: auto 20%;
-    background-color: bisque;
 }
 
 @media screen and (max-width: 1200px) {
-    body {
+    body.selected-background {
         background-size: auto 15%;
     }
 }
 
 @media screen and (max-width: 768px) {
-    body {
+    body.selected-background {
         background-size: auto 10%;
     }
 }
 
 @media screen and (max-width: 480px) {
-    body {
+    body.selected-background {
         background-image: none;
     }
 }
