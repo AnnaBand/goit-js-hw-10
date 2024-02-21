@@ -1,7 +1,3 @@
-import axios from "axios";
-
-axios.defaults.headers.common["x-api-key"] = "live_hqS8g05ZHcCMorrOK1oGyTpHCtvYrHyZdj6nwMqTquFs62KJcer5ugjk9Rju168f";
-
 import { fetchBreeds, fetchCatByBreed } from "./cat-api.js";
 
 import SlimSelect from 'slim-select';
@@ -26,16 +22,24 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
     
-    const options = breeds.map(breed => ({ value: breed.id, text: breed.name }));
-    options.unshift({ value: '', text: '- Select a breed -' });
+    const options = breeds.map(breed => ({
+        value: breed.id,
+        text: breed.name
+    }));
+      
+    options.unshift({
+        value: '',
+        text: '- Select a breed -'
+    });
 
     new SlimSelect({
       select: '#single',
-      data: options,
+      data: options
     });
 
     loader.style.display = "none";
-  } catch (error) {
+  }  
+  catch (error) {
     console.error("Error while fetching cat breeds:", error);
     Notiflix.Notify.failure('Oops! Something went wrong! Try reloading the page!');
   }
@@ -73,10 +77,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       catInfo.appendChild(catTemperament);
 
       catInfo.style.display = "block";
-    } catch (error) {
+    }
+    catch (error) {
       console.error("Error while fetching cat information:", error);
       Notiflix.Notify.failure('Oops! Something went wrong! Try reloading the page!');
-    } finally {
+    }
+    finally {
       loader.style.display = "none";
     }
   });
